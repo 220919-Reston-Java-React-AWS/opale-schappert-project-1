@@ -2,14 +2,29 @@ What: An application that will allow users to login or register with a username 
 	Usermames and passwords should be stored in a database.
 	Usernames cannot be used by two different people. 
 	Differentiate between Managers and other Employees.
-	Managers should be able to approve or deny reimbursment requests. 
+	Managers should be able to approve or deny reimbursement requests. 
 	
-How: Using Java language create two classes: Employee and Manager.
-	Manager can inherit Employee but needs to add the approve/deny function.
+How: Using Java language create multiple classes: Employee, Manager, MainMenu, LoginMenu, RegistrationMenu...
+	MainMenu:
+		Create the front page with options to Login, Resgister for new accounts, access an About Menu
+			or exit out of the program.
+	LoginMenu:
+		Allow for users to go back to the main menu, input username and passwords, or exit the program
+		Communicate with some sort of database to check login information is correct
+	RegistrationMenu:
+		Allow for users to go back to the main menu, create a new profile, or exit the program
+		Communicate with some database to register the login information to be later checked by LoginMenu
 	Employee:
-		Connect with database to get/register username and password
-		Sumbit reimbursments requests
-		Check reimbursment requests
+		Allow for useres to request reimbursement and log out
 	Manager:
-		Inherit Employee
-		Approve or deny requests
+		Allower users to approve or deny requests and log out.
+		Managers should also be able to request reimbursements
+	Authetication:
+		Runs the checks for logins and registration 
+		Stores any new information in the database
+
+	TicketService:
+		Makes sure the amount is reasonable (No negatives etc.)
+		Store the request to the users account
+		Allow useres to pull their old requests
+		Allow managers to deny/approve
