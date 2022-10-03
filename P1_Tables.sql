@@ -42,7 +42,7 @@ insert into users(user_name, pass_word, first_name, last_name, role_id)
 
 create table reimbursements(
 	id SERIAL primary key,
-	amount NUMERIC(8,2) check (amount >0),
+	amount MONEY, 
 	reimburesement_type VARCHAR(30),
 	employee_id INTEGER references users(id),
 	manager_id INTEGER references users(id),
