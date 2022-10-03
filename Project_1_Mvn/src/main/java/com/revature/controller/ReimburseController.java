@@ -1,8 +1,6 @@
 package com.revature.controller;
 
-import com.revature.exception.ReimbursementAlreadyDealtException;
-import com.revature.exception.ReimbursementNotFoundException;
-import com.revature.exception.UserNameAlreadyTakenException;
+import com.revature.exception.*;
 import com.revature.model.Employee;
 import com.revature.model.Reimbursements;
 import com.revature.service.ReimburseService;
@@ -49,11 +47,17 @@ public class ReimburseController {
             Employee employee = (Employee) httpSession.getAttribute("employee");
             Reimbursements reimbursements = ctx.bodyAsClass(Reimbursements.class);
             if(employee != null){
+
+                int employeeId = employee.getId();
+                reimbursements.setEmployeeId(employeeId);
                 try {
                     ReimburseService.addReimbursement(reimbursements);
                     ctx.result("Reimbursement request made. A manager will get to your request shortly.");
                 } catch (IllegalArgumentException e) {
                     ctx.status(402);
+                    ctx.result(e.getMessage());
+                }catch (EmployeeIdNotFountException | DescriptionMissingException e){
+                    ctx.status(400);
                     ctx.result(e.getMessage());
                 }
             }else{
@@ -77,9 +81,9 @@ public class ReimburseController {
                     String status = r.getStatus();
 
                     try{
-                        reimburseService.updateSTatus(reimbursementId, status, managerId);
+                        reimburseService.updateStatus(reimbursementId, status, managerId);
                         ctx.result("Status updated");
-                    }catch(ReimbursementAlreadyDealtException | IllegalArgumentException e){
+                    }catch(ReimbursementAlreadyDealtException | IllegalArgumentException | WrongUpdateWordException e){
                         ctx.result(e.getMessage());
                         ctx.status(400);
                     }catch (ReimbursementNotFoundException e){
@@ -87,7 +91,7 @@ public class ReimburseController {
                         ctx.status(404);
                     }
                 }else{
-                    ctx.result("You are logged in but not a trainer.");
+                    ctx.result("You do not have the authorization to update the status.");
                     ctx.status(401);
                 }
             }else{

@@ -15,14 +15,19 @@ public class AuthController {
     public void mapEndpoint(Javalin app){
         app.post("/login", (ctx) ->{
             Employee credentials = ctx.bodyAsClass(Employee.class);
-
+            HttpSession sessioncheck = ctx.req.getSession(false);
             try{
+                if(sessioncheck == null)
+                {
+                    Employee employee = authService.login(credentials.getUserName(), credentials.getPassWord());
 
-                Employee employee = authService.login(credentials.getUserName(), credentials.getPassWord());
-
-                HttpSession session = ctx.req.getSession();
-                session.setAttribute("employee", employee);
-                ctx.result("Log in successful!");
+                    HttpSession session = ctx.req.getSession();
+                    session.setAttribute("employee", employee);
+                    ctx.result("Log in successful!");
+                }else{
+                    ctx.result("You or someone else is already logged in");
+                    ctx.status(400);
+                }
             }catch(InvalidLoginException e){
                 ctx.status(402);
                 ctx.result(e.getMessage());

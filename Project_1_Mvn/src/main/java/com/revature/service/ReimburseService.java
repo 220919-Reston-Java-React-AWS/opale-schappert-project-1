@@ -1,9 +1,6 @@
 package com.revature.service;
 
-import com.revature.exception.EmployeeIdNotFountException;
-import com.revature.exception.ReimbursementAlreadyDealtException;
-import com.revature.exception.ReimbursementNotFoundException;
-import com.revature.exception.UserNameAlreadyTakenException;
+import com.revature.exception.*;
 import com.revature.model.Employee;
 import com.revature.model.Reimbursements;
 import com.revature.repository.ReimburseRepository;
@@ -26,29 +23,35 @@ public class ReimburseService {
         return reimburseRepository.getAllReimbursementsforEmployee(employeeId);
     }
 
-    public static void addReimbursement(Reimbursements reimbursement) throws SQLException, IllegalArgumentException, EmployeeIdNotFountException {
+    public static void addReimbursement(Reimbursements reimbursement) throws SQLException, IllegalArgumentException, EmployeeIdNotFountException, DescriptionMissingException {
 
         if (reimbursement.getAmount() <= 0){
-            throw new IllegalArgumentException("Amount entered must be greater than 0.");
+            throw new IllegalArgumentException("Please enter an amount greater than 0.");
         }
-//        if (reimbursement.getEmployeeId()== 0) ;{
-//            throw new EmployeeIdNotFountException(("There is no employee with that Id"));
-//        }
+        if(reimbursement.getDescrip() == null){
+            throw new DescriptionMissingException("Please enter a description of the reimbursement");
+        }
+        if (reimbursement.getEmployeeId() == 0) {
+            throw new EmployeeIdNotFountException(("You have not provided an employee id/You provided a null employee id"));
+        }
             ReimburseRepository.addReimbursement(reimbursement);
 
         }
-    public boolean updateSTatus(int reimbursementId, String status, int managerId) throws SQLException, ReimbursementNotFoundException, ReimbursementAlreadyDealtException {
+    public boolean updateStatus(int reimbursementId, String status, int managerId) throws SQLException, ReimbursementNotFoundException, ReimbursementAlreadyDealtException, WrongUpdateWordException {
         //Check if grade is negative
 
-        //check if assignment does not exist
+        //check if reimbursement does not exist
         Reimbursements reimbursements = ReimburseRepository.getReimbursementById(reimbursementId);
         if ( reimbursements== null){
-            throw new ReimbursementNotFoundException("Reimbursement with id" + reimbursementId + " was not found.");
+            throw new ReimbursementNotFoundException("Reimbursement with id " + reimbursementId + " was not found.");
         }
 
-        //Already graded
+        //Already approved/denied
         if(!reimbursements.getStatus().equals("pending") ){
-            throw new ReimbursementAlreadyDealtException("Assignment with id " + reimbursementId + " has already been graded");
+            throw new ReimbursementAlreadyDealtException("Reimbursement with id " + reimbursementId + " has already been " +reimbursements.getStatus());
+        }
+        if(!"approved".equals(status) &&  !"denied".equals(status) ){
+            throw new WrongUpdateWordException("You can only approve or deny reimbursements. Use key words 'approved' or 'denied'.");
         }
 
         return ReimburseRepository.updateStatus(reimbursementId, status, managerId);

@@ -69,7 +69,8 @@ public class ReimburseRepository {
 
         try(Connection connectionObj = ConnectionsFactory.createConnection()){
 
-            String sql = "INSERT into reimbursements (amount, reimbursement_type, employee_id ) values (?,?,?)";
+            String sql = "INSERT into reimbursements (amount, reimbursement_type,employee_id ) values (?,?,?)";
+
 
             PreparedStatement pstmt = connectionObj.prepareStatement(sql);
 
@@ -125,8 +126,8 @@ public class ReimburseRepository {
                 int reimbursementId = rs.getInt("id");
                 double amount = rs.getDouble("amount");
                 String descrip = rs.getString("reimbursement_type");
-                int employeeId = rs.getInt("student_id");
-                int managerId = rs.getInt("grader_id");
+                int employeeId = rs.getInt("employee_id");
+                int managerId = rs.getInt("manager_id");
                 String status = rs.getString("status");
 
                 return new Reimbursements(reimbursementId, amount, descrip, employeeId, managerId, status);
