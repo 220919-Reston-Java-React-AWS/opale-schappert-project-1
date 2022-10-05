@@ -1,10 +1,12 @@
 package com.revature.controller;
 
 import com.revature.exception.InvalidLoginException;
+import com.revature.exception.MissingRegistrationInfoException;
 import com.revature.exception.UserNameAlreadyTakenException;
 import com.revature.model.Employee;
 import com.revature.service.AuthService;
 import io.javalin.Javalin;
+import org.postgresql.util.PSQLException;
 
 import javax.servlet.http.HttpSession;
 
@@ -48,17 +50,27 @@ public class AuthController {
 
         app.post("/register", (ctx) -> {
             Employee employee = ctx.bodyAsClass(Employee.class);
+            HttpSession sessioncheck = ctx.req.getSession(false);
             try{
-                authService.register(employee);
-                ctx.result("Successfully registered. Please login to view reimbursements");
-            }catch (UserNameAlreadyTakenException e){
+                if(sessioncheck == null) {
+                    authService.register(employee);
+                    ctx.result("Successfully registered. Please login to view reimbursements");
+                }else {
+                    ctx.result("You cannot register a new employee while someone else is logged in.");
+                    ctx.status(400);
+                }
+            }catch (UserNameAlreadyTakenException  e){
                 ctx.status(402);
+                ctx.result(e.getMessage());
+            }catch (MissingRegistrationInfoException e){
+                ctx.status(401);
                 ctx.result(e.getMessage());
             }
 
         });
 
         app.post("/logout", (ctx) ->{
+            ctx.result("Logout successful");
            ctx.req.getSession().invalidate();
         });
     }

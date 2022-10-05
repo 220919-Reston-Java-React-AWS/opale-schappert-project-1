@@ -1,10 +1,10 @@
 package com.revature.service;
 
-import com.revature.exception.InvalidLoginException;
-import com.revature.exception.UserNameAlreadyTakenException;
+import com.revature.exception.*;
 import com.revature.model.Employee;
 import com.revature.repository.UserRepo;
 import org.eclipse.jetty.server.Authentication;
+import org.postgresql.util.PSQLException;
 
 import java.sql.SQLException;
 
@@ -21,11 +21,15 @@ public class AuthService {
         return employee;
     }
 
-    public void register(Employee employee) throws SQLException, UserNameAlreadyTakenException {
+    public void register(Employee employee) throws SQLException, UserNameAlreadyTakenException, MissingRegistrationInfoException, PSQLException {
 
-        if (UserRepo.getEmployeeByUsernameAndPassword(employee.getUserName(), employee.getPassWord()) != null){
+        if (UserRepo.getEmployeeByUsername(employee.getUserName()) != null){
             throw new UserNameAlreadyTakenException("This username is already in use. Please select another");
         }
+        if(employee.getUserName() == null || employee.getPassWord()== null || employee.getFirstName() == null || employee.getLastName() ==null){
+            throw new MissingRegistrationInfoException("Please make sure you have included a username, password, as well as your first and last name.");
+        }
+
         userRepo.addEmployee(employee);
     }
     }

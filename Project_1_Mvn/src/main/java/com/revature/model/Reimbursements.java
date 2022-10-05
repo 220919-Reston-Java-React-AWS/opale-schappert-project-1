@@ -6,8 +6,8 @@ public class Reimbursements {
 
     //Variables
     private int id;
-    private double amount;
-    private String descrip;
+    private float amount;
+    private String description;
     private int employeeId;
     private int managerId;
     private String status;
@@ -17,10 +17,10 @@ public class Reimbursements {
 
     }
     //Parameterized Constructor
-    public Reimbursements(int id, double amount, String descrip, int employeeId, int managerId, String status) {
+    public Reimbursements(int id, float amount, String description, int employeeId, int managerId, String status) {
         this.id = id;
         this.amount = amount;
-        this.descrip = descrip;
+        this.description = description;
         this.employeeId = employeeId;
         this.managerId = managerId;
         this.status = status;
@@ -34,20 +34,20 @@ public class Reimbursements {
         this.id = id;
     }
 
-    public double getAmount() {
+    public float getAmount() {
         return amount;
     }
 
-    public void setAmount(double amount) {
+    public void setAmount(float amount) {
         this.amount = amount;
     }
 
-    public String getDescrip() {
-        return descrip;
+    public String getdescription() {
+        return description;
     }
 
-    public void setDescrip(String descrip) {
-        this.descrip = descrip;
+    public void setdescription(String description) {
+        this.description = description;
     }
 
     public int getEmployeeId() {
@@ -79,12 +79,12 @@ public class Reimbursements {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Reimbursements that = (Reimbursements) o;
-        return id == that.id && Double.compare(that.amount, amount) == 0 && employeeId == that.employeeId && managerId == that.managerId && Objects.equals(descrip, that.descrip) && Objects.equals(status, that.status);
+        return id == that.id && Float.compare(that.amount, amount) == 0 && employeeId == that.employeeId && managerId == that.managerId && Objects.equals(description, that.description) && Objects.equals(status, that.status);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, amount, descrip, employeeId, managerId, status);
+        return Objects.hash(id, amount, description, employeeId, managerId, status);
     }
 
     @Override
@@ -92,7 +92,7 @@ public class Reimbursements {
         return "Reimbursements{" +
                 "id=" + id +
                 ", amount=" + amount +
-                ", descrip='" + descrip + '\'' +
+                ", description='" + description + '\'' +
                 ", employeeId=" + employeeId +
                 ", managerId=" + managerId +
                 ", status='" + status + '\'' +

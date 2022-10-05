@@ -42,6 +42,37 @@ public class ReimburseController {
             }
         });
 
+        app.get("/reimbursements/{status}", (ctx) ->{
+            HttpSession httpSession = ctx.req.getSession();
+
+            Employee employee = (Employee) httpSession.getAttribute("employee");
+            try {
+
+                if (employee != null) {
+                    if (employee.getRoleId() == 2) {
+                        String reimbursementStatus = (ctx.pathParam("status"));
+                        List<Reimbursements> reimbursements = reimburseService.getAllReimbursementsByStatus(reimbursementStatus);
+
+                        if(reimbursements.isEmpty()){
+                            ctx.result("There are currently no reimbursements with the requested status type.");
+                        }else {
+                            //Print out list
+                            ctx.json(reimbursements);
+                        }
+
+                    } else {
+                        ctx.result("You are not logged in as a manager");
+                    }
+                } else {
+                    ctx.result("You are not logged in");
+                    ctx.status(401);
+                }
+            }catch (ReimbursementNotFoundException e){
+                ctx.status(400);
+                ctx.result(e.getMessage());
+            }
+        });
+
         app.post("/addReimbursement", (ctx) -> {
             HttpSession httpSession = ctx.req.getSession();
             Employee employee = (Employee) httpSession.getAttribute("employee");
@@ -66,7 +97,7 @@ public class ReimburseController {
             }
             });
 
-        //Upadte the status
+        //Update the status
         app.patch("/reimbursement/{reimbursementId}", (ctx) ->{
             HttpSession httpSession = ctx.req.getSession();
             Employee employee = (Employee) httpSession.getAttribute("employee");

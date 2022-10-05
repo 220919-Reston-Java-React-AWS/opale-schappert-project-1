@@ -34,7 +34,7 @@ create table users (
 insert into users(user_name, pass_word, first_name, last_name, role_id)
 	values
 	('Test', '1236', 'Bryan', 'Johnson', 1),
-	('Bach_tran', 'pass85', 'Bach', 'Tran', 2);
+	('Opale_Schapp', 'pass85', 'Opale', 'Schappert', 2);
 	
 ----USERS------
 
@@ -42,16 +42,16 @@ insert into users(user_name, pass_word, first_name, last_name, role_id)
 
 create table reimbursements(
 	id SERIAL primary key,
-	amount MONEY, 
-	reimburesement_type VARCHAR(30),
+	amount numeric (7,2) not null , 
+	reimbursement_descrip VARCHAR(200) not null,
 	employee_id INTEGER references users(id),
 	manager_id INTEGER references users(id),
-	status VARCHAR(30)
+	status VARCHAR(30) default 'pending'
 );
 
-insert into reimbursements (amount, employee_id)
+insert into reimbursements (amount, employee_id, reimbursement_descrip)
 	values 
-	(1200, 1),
-	(12.50, 1);
+	(1200, 1, 'N/a'),
+	(12.55, 1, 'N/a');
 
 ---REIMBURSEMENTS------
