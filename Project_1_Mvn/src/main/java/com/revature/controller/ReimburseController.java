@@ -31,7 +31,13 @@ public class ReimburseController {
                     int employeeId = employee.getId();
                     List<Reimbursements> reimbursements = reimburseService.getAllReimbursementsforEmployee(employeeId);
                     //Print out list
-                    ctx.json(reimbursements);
+                    if(reimbursements.isEmpty()){
+                        ctx.result("You haven't submitted any reimbursement requests.");
+                    }else {
+                        //Print out list
+                        ctx.json(reimbursements);
+                    }
+
 
                 }else{
                     ctx.result("You are not logged in as an employee or manager");
@@ -68,7 +74,7 @@ public class ReimburseController {
                     ctx.status(401);
                 }
             }catch (ReimbursementNotFoundException e){
-                ctx.status(400);
+                ctx.status(404);
                 ctx.result(e.getMessage());
             }
         });
@@ -85,10 +91,10 @@ public class ReimburseController {
                     ReimburseService.addReimbursement(reimbursements);
                     ctx.result("Reimbursement request made. A manager will get to your request shortly.");
                 } catch (IllegalArgumentException e) {
-                    ctx.status(402);
+                    ctx.status(406);
                     ctx.result(e.getMessage());
                 }catch (EmployeeIdNotFountException | DescriptionMissingException e){
-                    ctx.status(400);
+                    ctx.status(404);
                     ctx.result(e.getMessage());
                 }
             }else{
@@ -116,7 +122,7 @@ public class ReimburseController {
                         ctx.result("Status updated");
                     }catch(ReimbursementAlreadyDealtException | IllegalArgumentException | WrongUpdateWordException e){
                         ctx.result(e.getMessage());
-                        ctx.status(400);
+                        ctx.status(406);
                     }catch (ReimbursementNotFoundException e){
                         ctx.result(e.getMessage());
                         ctx.status(404);
