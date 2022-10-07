@@ -28,10 +28,10 @@ public class AuthController {
                     ctx.result("Log in successful!");
                 }else{
                     ctx.result("You or someone else is already logged in");
-                    ctx.status(409);
+                    ctx.status(400);
                 }
             }catch(InvalidLoginException e){
-                ctx.status(404);
+                ctx.status(402);
                 ctx.result(e.getMessage());
             }
         });
@@ -44,7 +44,7 @@ public class AuthController {
                ctx.json(employee);
            }else{
                ctx.result("User is not logged in");
-               ctx.status(401);
+               ctx.status(400);
            }
         });
 
@@ -57,20 +57,20 @@ public class AuthController {
                     ctx.result("Successfully registered. Please login to view reimbursements");
                 }else {
                     ctx.result("You cannot register a new employee while someone else is logged in.");
-                    ctx.status(409);
+                    ctx.status(400);
                 }
             }catch (UserNameAlreadyTakenException  e){
-                ctx.status(406);
+                ctx.status(402);
                 ctx.result(e.getMessage());
             }catch (MissingRegistrationInfoException e){
-                ctx.status(405);
+                ctx.status(401);
                 ctx.result(e.getMessage());
             }
 
         });
 
         app.post("/logout", (ctx) ->{
-            ctx.result("Log out successful");
+            ctx.result("Logout successful");
            ctx.req.getSession().invalidate();
         });
     }
